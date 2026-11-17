@@ -451,6 +451,7 @@ describe('Instagram API with Unified Login', () => {
     expect(authorizationUrl.searchParams.get('config_id')).toBe('900000000000001');
     expect(authorizationUrl.searchParams.get('redirect_uri')).toBe(redirectUri);
     expect(authorizationUrl.searchParams.get('response_type')).toBe('code');
+    expect(authorizationUrl.searchParams.get('override_default_response_type')).toBe('true');
     expect(authorizationUrl.searchParams.get('prompt')).toBe('login');
     expect(authorizationUrl.searchParams.get('scope')).toBeNull();
     expect(authorizationUrl.searchParams.has('client_secret')).toBe(false);

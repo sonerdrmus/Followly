@@ -41,6 +41,7 @@ export class MetaInstagramClient {
       url.searchParams.set('config_id', this.configId());
       url.searchParams.set('redirect_uri', this.redirectUri());
       url.searchParams.set('response_type', 'code');
+      url.searchParams.set('override_default_response_type', 'true');
       url.searchParams.set('state', state);
       url.searchParams.set('prompt', 'login');
       return url.toString();
