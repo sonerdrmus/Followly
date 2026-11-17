@@ -1,0 +1,45 @@
+name: followly
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-followly}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-followly_dev_only}
+      POSTGRES_DB: ${POSTGRES_DB:-followly}
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - followly_postgres:/var/lib/postgresql/data
+      - ./docker/postgres/create-test-db.sh:/docker-entrypoint-initdb.d/10-create-test-db.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - followly
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - followly_redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - followly
+
+volumes:
+  followly_postgres:
+  followly_redis:
+
+networks:
+  followly:
