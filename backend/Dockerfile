@@ -13,9 +13,9 @@ ENV NODE_ENV=production
 RUN apk add --no-cache python3 make g++
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci --omit=dev && npx prisma generate && apk del python3 make g++
+RUN npm ci --omit=dev && npm install --no-save --package-lock=false prisma@6.19.3 && npx prisma generate && apk del python3 make g++
 COPY --from=build /app/dist ./dist
 RUN chown -R node:node /app
 USER node
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
